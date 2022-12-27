@@ -1,0 +1,16 @@
+@use '../../sass/variables';
+
+.hello-world-button{
+   font-size:20px;
+   color:white;
+   background-color: variables.$button-background-color;
+   outline: none;
+   padding: 7px 15px;
+   display: block;
+   cursor:pointer;
+}
+
+.hello-world-text{
+   color: green;
+   font-weight: bold;
+}

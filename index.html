@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Document</title>
+      <link rel="stylesheet" href="./dist/css/main.css" />
+   </head>
+   <body>
+      <!--  
+         Adesso facciamo due build uno per il development e l'altro per la production
+         
+         In develompent vogliamo che il bundle venga prodotto velocemente e non ci
+         interessano le ottimizzazioni come terser (minificazione e compressioni) e 
+         altre cose che fanno aumentare il tempo per creare il bundle.
+
+         In production invece vogliamo queste ottimizzazioni.
+
+         Quindi il nostro webpack deve essere settato diversamente a secondo se 
+         siamo in development o in production mode.
+
+         Si può fare in diversi modi questa cosa. Il modo più facile di farlo è
+         creare due file di configurazione diversi. Prima avevamo solo
+         webpack.config.js
+         Adesso avremo
+         webpack.production.config.js
+         con mode:'production'
+         e
+         webpack.dev.config.js
+
+         in cui mettiamo mode:'development'
+
+         (Finora avevamo mode:'none')
+
+         Impostando mode:'production'  
+         vengono automaticamente forniti una serie di plugin (per vedere quali vai alla
+         documentazione ufficiale di webpack sotto la voce mode). Tra cui c'è Terse che
+         quindi in mode:'production'  non deve essere più installato nè configurato
+         Invece in 'development' mode viene usato sourcemap di defaullt che in production
+         non serve (perchè è una cosa che agevola il debug)
+
+         Inoltre puoi usare
+         process.env.NODE_ENV
+         nel codice js
+         process.env.NODE_ENV   torna la stringa 'production'  oppure 
+         'development'  cioè torna il valore di mode
+
+         In index.js ho aggiunto
+
+         if (process.env.NODE_ENV === 'production')
+            console.log('Production mode');
+         else if (process.env.NODE_ENV === 'development')
+            console.log('Development mode');
+
+
+         In webpack.production.config.js possiamo eliminare TerserPlugin() dalla
+         lista dei plugin e il require, dato che Terser in production c'è per default
+         (non serve neanche installarlo).
+         Inoltre possiamo eliminare watch:true
+         Metti minify:true dentro le option di HtmlWebpackPlugin per minificare l'html
+
+         In webpack.dev.config.js possiamo eliminare [contenthash] dal nome del bundle
+         perchè non serve il caching durante il development
+         Stessa cosa in 
+         assetModuleFilename
+         Possiamo eliminare Terser perchè in fase di sviluppo non serve minificare e
+         comprimere
+         Inoltre non c'è bisogno di mettere il css in un file separato, cioè usiamo
+         il plugin style-loader invece di MiniCssExtractPlugin perchè è più veloce.
+         Togli anche Babel se il tuo browser è moderno
+
+         MA ADESSO COME STABILIAMO QUANDO VOGLIAMO FARE LA BUILD PER 
+         IL DEVELOPMENT E QUANDO LA VOGLIAMO FARE PER LA PRODUCTION?
+
+         VAI in package.json e dentro mettici
+         "scripts": {
+            "build": "webpack --progress --profile --config webpack.production.config.js",
+            "dev":"webpack --progress --profile --config webpack.dev.config.js",
+         }
+
+         Il comando webpack prende automaticamente webpack.config.js ma se gli
+         cambiamo nome come in questo caso dobbiamo dirgli quale file prendere
+         con --config
+
+         Quindi con 
+         npm run build
+         farai la build in production mode
+         
+         e con
+         npm run dev
+         farai la build in development mode
+
+
+         In index.ejs ho anche modificato l'inclusione del tag <link> in
+         modo da fare l'inclusione solo quando sono in mode:'production'
+         (c'è un if)
+         (perchè in fase di 'development' uso lo style-loader e quindi il tag
+         style per includere il csss)
+
+         Nota che in questo progetto copio anche le immagini caricate senza
+         gli asset/resource ma con il classico <img src>  nell'html
+         Le immagini sono copiate con copy-webpack-plugin nella cartella dist
+         Solo che in produzione non funziona perchè ho aggiunto [hashcontent]
+         al nome dell'immagine,
+         mentre l'immagine referenziata in index.ejs e quindi nell'index.html
+         prodotto punta all'immagine senza l'hash
+
+         HO CHIESTO A VICTOR COME RISOLVERE:
+      -->
+
+      <img src="./assets/img/natura.jpg" alt="Natura.jpg" />
+      <img src="./assets/img/natale.jpg" alt="Natale.jpg" />
+      <button class="hello-world-button">Ciao</button>
+      <img id="asset-resource" />
+      <script src="./dist/js/bundle.js"></script>
+   </body>
+</html>

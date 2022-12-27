@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Custom insertion example</title>
+      <!-- prettier-ignore -->
+      <% if (process.env.NODE_ENV === 'production'){%> 
+       <%  for(var i=0; i < htmlWebpackPlugin.files.css.length; i++) {%>
+      <link
+         type="text/css"
+         rel="stylesheet"
+         href="<%= htmlWebpackPlugin.files.css[i] %>"
+      />
+      <% } }%>
+   </head>
+   <body>
+      <img src="<%= myJSON['assets/img/natura.jpg'] %>" alt="Natura.jpg" />
+      <img src="<%= myJSON['assets/img/natale.jpg'] %>" alt="Natale.jpg" />
+      <button class="hello-world-button">Ciao</button>
+      <img id="asset-resource" />
+
+      <% for(var i=0; i < htmlWebpackPlugin.files.js.length; i++) {%>
+      <script
+         type="text/javascript"
+         src="<%= htmlWebpackPlugin.files.js[i] %>"
+      ></script>
+      <% } %>
+   </body>
+</html>
